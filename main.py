@@ -75,7 +75,7 @@ def generate_insight(variable_name: str,
 
 
 # 데이터 로드
-train = pd.read_csv("C:/Users/ehdus/OneDrive/바탕 화면/내배캠 QAQC/vs code/최종프로젝트/train.csv")
+train = pd.read_csv("train.csv")
 
 # 컬럼 한글명 기준 스펙 딕셔너리
 spec_dict = {
