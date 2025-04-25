@@ -74,8 +74,29 @@ def generate_insight(variable_name: str,
         return f"인사이트 생성 중 오류가 발생했습니다: {e}"
 
 
-# 데이터 로드
-train = pd.read_csv("train.csv")
+# ▶ train.csv 업로드 받기
+uploaded_train = st.file_uploader(
+    "▶ train.csv 파일을 업로드하세요",
+    type="csv",
+    help="로컬에 있는 train.csv를 선택하면 자동으로 읽어들입니다."
+)
+if uploaded_train is None:
+    st.warning("분석을 위해 반드시 train.csv를 업로드해야 합니다.")
+    st.stop()
+else:
+    train = pd.read_csv(uploaded_train)
+
+# ▶ train_eda.csv 업로드 받기 (모델 예측 페이지나 EDA 페이지에서 쓰신다면)
+uploaded_eda = st.file_uploader(
+    "▶ train_eda.csv 파일을 업로드하세요",
+    type="csv",
+    help="모델 예측이나 EDA용으로 사용됩니다."
+)
+if uploaded_eda is None:
+    st.warning("train_eda.csv를 업로드해 주세요.")
+    st.stop()
+else:
+    train_eda = pd.read_csv(uploaded_eda)
 
 # 컬럼 한글명 기준 스펙 딕셔너리
 spec_dict = {
@@ -293,9 +314,6 @@ elif page == "모델 예측 페이지":
     model.load_state_dict(torch.load('lstm_autoencoder.pth', map_location=device))
     model.eval()
 
-    # 데이터 불러오기
-    X_df = pd.read_csv("X_train.csv").drop(columns=["Unnamed: 0"])
-    # ← X 컬럼 리스트 출력은 제거했습니다.
 
     # 텐서로 변환 & 예측
     X_tensor = torch.tensor(X_df.values, dtype=torch.float32).to(device)
